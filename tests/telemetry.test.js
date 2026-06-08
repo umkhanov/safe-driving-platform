@@ -4,6 +4,7 @@ const request = require('supertest');
 
 process.env.JWT_SECRET = 'test-secret';
 process.env.BCRYPT_ROUNDS = '4';
+process.env.TRIP_IDLE_TIMEOUT_SECONDS = '1';
 
 const { createDb } = require('../src/db');
 const { createApp } = require('../src/app');
@@ -156,4 +157,59 @@ test('GET /telemetry as admin can read any device', async () => {
     .set('Authorization', `Bearer ${adminToken}`);
   assert.strictEqual(res.status, 200);
   assert.strictEqual(res.body.length, 1);
+});
+
+test('telemetry auto-manages trip lifecycle for device driving sessions', async () => {
+  const { app, userToken, deviceId } = await setup();
+
+  const first = await request(app)
+    .post('/telemetry')
+    .set('Authorization', `Bearer ${userToken}`)
+    .send({
+      deviceId,
+      samples: [
+        sample('2026-05-12T10:00:00Z', 'gps', { latitude: 40.182, longitude: 29.063 }),
+        sample('2026-05-12T10:00:01Z', 'accel', { x: -6, y: 0.1, z: 0.2 }),
+      ],
+    });
+  assert.strictEqual(first.status, 201);
+  assert.ok(first.body.tripId);
+
+  await request(app)
+    .post('/telemetry')
+    .set('Authorization', `Bearer ${userToken}`)
+    .send({
+      deviceId,
+      samples: [sample('2026-05-12T10:00:02Z', 'accel', { x: 0.4, y: 0, z: 9.8 })],
+    });
+
+  let trips = await request(app).get('/trips').set('Authorization', `Bearer ${userToken}`);
+  assert.strictEqual(trips.status, 200);
+  assert.strictEqual(trips.body.length, 1);
+  assert.strictEqual(trips.body[0].status, 'Active');
+  assert.strictEqual(trips.body[0].deviceId, deviceId);
+  assert.strictEqual(trips.body[0].endedAt, null);
+  assert.ok(trips.body[0].alertsCount >= 1);
+
+  await new Promise((resolve) => setTimeout(resolve, 1300));
+
+  trips = await request(app).get('/trips').set('Authorization', `Bearer ${userToken}`);
+  assert.strictEqual(trips.body.length, 1);
+  assert.strictEqual(trips.body[0].status, 'Completed');
+  assert.ok(trips.body[0].endedAt);
+
+  const resumed = await request(app)
+    .post('/telemetry')
+    .set('Authorization', `Bearer ${userToken}`)
+    .send({
+      deviceId,
+      samples: [sample('2026-05-12T10:00:05Z', 'accel', { x: 0.2, y: 0, z: 9.8 })],
+    });
+  assert.strictEqual(resumed.status, 201);
+  assert.notStrictEqual(resumed.body.tripId, first.body.tripId);
+
+  trips = await request(app).get('/trips').set('Authorization', `Bearer ${userToken}`);
+  assert.strictEqual(trips.body.length, 2);
+  assert.strictEqual(trips.body[0].status, 'Active');
+  assert.strictEqual(trips.body[1].status, 'Completed');
 });

@@ -1,8 +1,86 @@
+# Quick Start
+
+## Backend
+
+```bash
+npm install
+cp .env.example .env
+npm run dev
+```
+
+Backend:
+
+```txt
+http://localhost:3000
+```
+
+Default admin account:
+
+```txt
+Email: test@test.com
+Password: 123456
+```
+
+## Dashboard
+
+```bash
+cd frontend/dashboard
+npm install
+npm run dev
+```
+
+Dashboard:
+
+```txt
+http://localhost:5173
+```
+
+## Mobile App
+
+```bash
+cd frontend/mobile
+npm install
+npx expo start --lan
+```
+
+Open Expo Go on iPhone and scan the QR code.
+
+For iPhone, Backend URL should be:
+
+```txt
+http://YOUR_MAC_IP:3000
+```
+
+## Demo Flow
+
+1. Start backend
+2. Login to dashboard
+3. Login to mobile app
+4. Press Start Driving
+5. Move the phone
+6. Observe realtime alerts, trips, vehicles and analytics updates
+
+## Notes
+
+The repository does not include:
+
+* .env
+* node_modules
+* SQLite database
+
+Create `.env` from `.env.example` before running the backend.
+
+
 # Safe Driving Backend
 
 Backend service for the **Safe Driving and Driver Behavior Analysis** platform — a term project for *Node.js ile Web Programlama* at Bursa Teknik Üniversitesi (Senaryo 1: Güvenli Sürüş).
 
-The mobile client (built by another team) treats the smartphone as an in-vehicle IoT node and POSTs accelerometer / gyroscope / GPS samples to this service. The backend persists samples, detects driving anomalies (hard brake, rapid acceleration, sharp turn), and pushes live alarms over Socket.io to subscribed dashboards (also built by another team).
+The platform consists of:
+- Backend API (Node.js + Express)
+- Fleet Dashboard (React + Vite)
+- Mobile Application (Expo + React Native)
+
+The mobile application sends accelerometer, gyroscope and GPS telemetry to the backend. The dashboard visualizes vehicles, trips, alerts and analytics in real time.
 
 ## What this repo owns
 
@@ -16,7 +94,8 @@ The mobile client (built by another team) treats the smartphone as an in-vehicle
 | Socket.io live event gateway | ✅ |
 | Sensor simulator (mobile-stand-in) | ✅ |
 | OpenAPI 3.0 spec + Swagger UI | ✅ |
-| Mobile UI / web dashboard UI | ❌ (separate teams) |
+| Mobile Application (Expo) | ✅ |
+| Fleet Dashboard (React + Vite) | ✅ |
 
 ## Tech stack
 

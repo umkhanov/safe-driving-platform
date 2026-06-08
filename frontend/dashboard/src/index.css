@@ -1,0 +1,150 @@
+:root {
+  --bg-base: #09101a;
+  --bg-layer-1: #132746;
+  --bg-layer-2: #142339;
+
+  --text-primary: #e8f0ff;
+  --text-secondary: #a7bcdb;
+  --text-muted: #92a7c9;
+  --text-heading: #f4f8ff;
+  --text-accent: #8fb2e8;
+
+  --card-bg: rgba(13, 24, 40, 0.86);
+  --card-border: rgba(138, 166, 208, 0.22);
+  --panel-bg: rgba(12, 22, 36, 0.86);
+  --panel-border: rgba(135, 166, 211, 0.22);
+  --surface-shadow: 0 14px 34px rgba(0, 0, 0, 0.18);
+  --surface-shadow-hover: 0 18px 38px rgba(0, 0, 0, 0.26);
+
+  --input-bg: #0f1929;
+  --input-border: rgba(148, 175, 217, 0.35);
+  --focus-ring: rgba(80, 142, 255, 0.6);
+
+  --button-bg-start: #3f78e0;
+  --button-bg-end: #2a5fc4;
+  --button-text: #ffffff;
+  --button-shadow: rgba(63, 120, 224, 0.3);
+  --ghost-bg: rgba(255, 255, 255, 0.08);
+  --ghost-border: rgba(255, 255, 255, 0.16);
+  --ghost-text: #dbe7ff;
+
+  --table-text: #d9e6fd;
+  --table-head-text: #9ab3da;
+  --table-border: rgba(141, 168, 211, 0.15);
+
+  --danger-text: #ff9b9e;
+  --info-text: #95d0ff;
+
+  --badge-default-bg: rgba(140, 157, 189, 0.2);
+  --badge-default-text: #d3def2;
+  --badge-positive-bg: rgba(52, 199, 127, 0.22);
+  --badge-positive-text: #90f0ba;
+  --badge-warning-bg: rgba(255, 196, 0, 0.2);
+  --badge-warning-text: #ffdc74;
+  --badge-danger-bg: rgba(255, 94, 98, 0.2);
+  --badge-danger-text: #ffb0b2;
+  --badge-critical-bg: rgba(255, 43, 80, 0.24);
+  --badge-critical-text: #ffd9e2;
+  --badge-critical-glow: rgba(255, 59, 92, 0.38);
+
+  --chart-grid: rgba(255, 255, 255, 0.08);
+  --chart-axis: #9caac0;
+  --chart-bar: #4d8cff;
+  --chart-bar-alt: #2fc7a5;
+  --chart-line: #76b5ff;
+  --chart-pie-low: #34c77f;
+  --chart-pie-medium: #ffc400;
+  --chart-pie-high: #ff5e62;
+  --chart-cursor: rgba(77, 140, 255, 0.12);
+  --chart-tooltip-bg: #0f1a2a;
+  --chart-tooltip-border: #1f314c;
+
+  font-family: 'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.45;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[data-theme='light'] {
+  --bg-base: #f3f6fc;
+  --bg-layer-1: #dce8fb;
+  --bg-layer-2: #d5deef;
+
+  --text-primary: #1d2a3f;
+  --text-secondary: #4e617f;
+  --text-muted: #617495;
+  --text-heading: #0f1f39;
+  --text-accent: #3d5f9a;
+
+  --card-bg: rgba(255, 255, 255, 0.88);
+  --card-border: rgba(67, 96, 140, 0.2);
+  --panel-bg: rgba(255, 255, 255, 0.9);
+  --panel-border: rgba(67, 96, 140, 0.2);
+  --surface-shadow: 0 10px 28px rgba(53, 75, 111, 0.12);
+  --surface-shadow-hover: 0 14px 32px rgba(53, 75, 111, 0.2);
+
+  --input-bg: #ffffff;
+  --input-border: rgba(87, 114, 156, 0.35);
+  --focus-ring: rgba(61, 120, 220, 0.48);
+
+  --button-bg-start: #2f6ad9;
+  --button-bg-end: #2557b5;
+  --button-text: #ffffff;
+  --button-shadow: rgba(39, 93, 194, 0.22);
+  --ghost-bg: rgba(232, 239, 252, 0.75);
+  --ghost-border: rgba(86, 115, 157, 0.32);
+  --ghost-text: #203659;
+
+  --table-text: #223451;
+  --table-head-text: #4d658c;
+  --table-border: rgba(106, 132, 171, 0.24);
+
+  --danger-text: #c84956;
+  --info-text: #1f69b8;
+
+  --badge-default-bg: rgba(112, 134, 168, 0.18);
+  --badge-default-text: #2f4a70;
+  --badge-positive-bg: rgba(47, 163, 105, 0.17);
+  --badge-positive-text: #1d7d4d;
+  --badge-warning-bg: rgba(201, 151, 14, 0.2);
+  --badge-warning-text: #885f00;
+  --badge-danger-bg: rgba(201, 73, 88, 0.2);
+  --badge-danger-text: #9b1f32;
+  --badge-critical-bg: rgba(214, 42, 80, 0.22);
+  --badge-critical-text: #7f102d;
+  --badge-critical-glow: rgba(214, 42, 80, 0.32);
+
+  --chart-grid: rgba(32, 59, 100, 0.15);
+  --chart-axis: #4b6388;
+  --chart-bar: #2f6ad9;
+  --chart-bar-alt: #1f9f85;
+  --chart-line: #1f6cbc;
+  --chart-pie-low: #1f8d57;
+  --chart-pie-medium: #c8910f;
+  --chart-pie-high: #bf3f50;
+  --chart-cursor: rgba(47, 106, 217, 0.12);
+  --chart-tooltip-bg: #f6f9ff;
+  --chart-tooltip-border: #b4c5e3;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text-primary);
+  background:
+    radial-gradient(circle at 15% 0%, var(--bg-layer-1) 0%, rgba(19, 39, 70, 0) 45%),
+    radial-gradient(circle at 100% 100%, var(--bg-layer-2) 0%, rgba(20, 35, 57, 0) 35%),
+    var(--bg-base);
+}
+
+button,
+input {
+  font: inherit;
+}

@@ -16,3 +16,8 @@ npm-debug.log*
 *.swp
 
 coverage/
+
+frontend/dashboard/dist/
+frontend/mobile/.expo/
+frontend/dashboard/.DS_Store
+frontend/mobile/.DS_Store

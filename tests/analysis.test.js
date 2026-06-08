@@ -1,7 +1,13 @@
 const test = require('node:test');
 const assert = require('node:assert');
 
-const { analyzeSample, analyzeBatch, THRESHOLDS } = require('../src/analysis');
+const {
+  analyzeSample,
+  analyzeBatch,
+  THRESHOLDS,
+  ENABLE_CRASH_DETECTION,
+  CRASH_THRESHOLDS,
+} = require('../src/analysis');
 
 function accel(ts, x, y = 0, z = 9.8) {
   return { ts, sensorType: 'accel', payload: { x, y, z } };
@@ -14,6 +20,12 @@ test('exposes thresholds for HARD_BRAKE, RAPID_ACCEL, SHARP_TURN', () => {
   assert.ok(THRESHOLDS.HARD_BRAKE < 0);
   assert.ok(THRESHOLDS.RAPID_ACCEL > 0);
   assert.ok(THRESHOLDS.SHARP_TURN > 0);
+});
+
+test('exposes demo crash detection config', () => {
+  assert.strictEqual(typeof ENABLE_CRASH_DETECTION, 'boolean');
+  assert.ok(CRASH_THRESHOLDS.IMPACT_VECTOR_DELTA_G > 0);
+  assert.ok(CRASH_THRESHOLDS.IMPACT_VECTOR_CHANGE_G > 0);
 });
 
 test('normal acceleration produces no alarms', () => {
@@ -86,4 +98,17 @@ test('analyzeBatch aggregates alarms across multiple samples', () => {
     alarms.map((a) => a.kind),
     ['HARD_BRAKE', 'SHARP_TURN', 'RAPID_ACCEL']
   );
+});
+
+test('extreme impact-style motion can produce CRASH_DETECTED (demo mode)', () => {
+  const alarms = analyzeSample(accel('t-crash', 30, 22, 5), { x: 0, y: 0, z: 1 });
+  const crash = alarms.find((a) => a.kind === 'CRASH_DETECTED');
+
+  if (!ENABLE_CRASH_DETECTION) {
+    assert.strictEqual(crash, undefined);
+    return;
+  }
+
+  assert.ok(crash);
+  assert.strictEqual(crash.severity, 'critical');
 });

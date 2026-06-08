@@ -18,7 +18,7 @@ module.exports = {
         properties: {
           id: { type: 'integer' },
           email: { type: 'string', format: 'email' },
-          role: { type: 'string', enum: ['user', 'admin'] },
+          role: { type: 'string', enum: ['driver', 'admin'] },
         },
       },
       Device: {
@@ -44,12 +44,53 @@ module.exports = {
         properties: {
           id: { type: 'integer' },
           deviceId: { type: 'integer' },
+          vehicleId: { type: 'integer', nullable: true },
+          driverId: { type: 'integer', nullable: true },
+          tripId: { type: 'integer', nullable: true },
           ts: { type: 'string', format: 'date-time' },
-          kind: { type: 'string', enum: ['HARD_BRAKE', 'RAPID_ACCEL', 'SHARP_TURN'] },
-          severity: { type: 'string', enum: ['low', 'medium', 'high'] },
+          kind: {
+            type: 'string',
+            enum: ['HARD_BRAKE', 'RAPID_ACCEL', 'SHARP_TURN', 'CRASH_DETECTED'],
+          },
+          severity: { type: 'string', enum: ['low', 'medium', 'high', 'critical'] },
           details: { type: 'object', additionalProperties: true },
           acknowledgedAt: { type: 'string', format: 'date-time', nullable: true },
           acknowledgedBy: { type: 'integer', nullable: true },
+        },
+      },
+      Vehicle: {
+        type: 'object',
+        properties: {
+          id: { type: 'integer' },
+          name: { type: 'string' },
+          status: { type: 'string', enum: ['Active', 'Idle', 'Warning', 'Offline'] },
+          currentDriverId: { type: 'integer', nullable: true },
+          lastLat: { type: 'number', nullable: true },
+          lastLng: { type: 'number', nullable: true },
+          lastSeenAt: { type: 'string', format: 'date-time', nullable: true },
+          riskLevel: { type: 'string', enum: ['Low', 'Medium', 'High'] },
+          createdAt: { type: 'string', format: 'date-time' },
+          updatedAt: { type: 'string', format: 'date-time' },
+        },
+      },
+      Trip: {
+        type: 'object',
+        properties: {
+          id: { type: 'integer' },
+          driverId: { type: 'integer', nullable: true },
+          vehicleId: { type: 'integer', nullable: true },
+          deviceId: { type: 'integer', nullable: true },
+          startedAt: { type: 'string', format: 'date-time' },
+          endedAt: { type: 'string', format: 'date-time', nullable: true },
+          distance: { type: 'number' },
+          riskScore: { type: 'string', enum: ['Low', 'Medium', 'High'] },
+          alertsCount: { type: 'integer' },
+          status: { type: 'string', enum: ['Active', 'Completed', 'Warning', 'Interrupted'] },
+          lastLat: { type: 'number', nullable: true },
+          lastLng: { type: 'number', nullable: true },
+          lastSampleAt: { type: 'string', format: 'date-time', nullable: true },
+          createdAt: { type: 'string', format: 'date-time' },
+          updatedAt: { type: 'string', format: 'date-time' },
         },
       },
       Error: { type: 'object', properties: { error: { type: 'string' } } },
@@ -75,7 +116,7 @@ module.exports = {
                 properties: {
                   email: { type: 'string', format: 'email' },
                   password: { type: 'string' },
-                  role: { type: 'string', enum: ['user', 'admin'] },
+                  role: { type: 'string', enum: ['driver', 'admin'] },
                 },
               },
             },
@@ -147,6 +188,94 @@ module.exports = {
         },
       },
     },
+    '/vehicles': {
+      get: {
+        summary: 'List vehicles (all for admin, assigned only for driver)',
+        security: [{ bearer: [] }],
+        responses: {
+          '200': { description: 'OK', content: { 'application/json': { schema: { type: 'array', items: { $ref: '#/components/schemas/Vehicle' } } } } },
+        },
+      },
+      post: {
+        summary: 'Create a vehicle (admin)',
+        security: [{ bearer: [] }],
+        responses: {
+          '201': { description: 'Created', content: { 'application/json': { schema: { $ref: '#/components/schemas/Vehicle' } } } },
+          '403': { description: 'Forbidden' },
+        },
+      },
+    },
+    '/vehicles/{id}': {
+      get: {
+        summary: 'Get vehicle by id',
+        security: [{ bearer: [] }],
+        parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }],
+        responses: {
+          '200': { description: 'OK', content: { 'application/json': { schema: { $ref: '#/components/schemas/Vehicle' } } } },
+          '403': { description: 'Forbidden' },
+          '404': { description: 'Not found' },
+        },
+      },
+      patch: {
+        summary: 'Update vehicle (admin)',
+        security: [{ bearer: [] }],
+        parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }],
+        responses: { '200': { description: 'OK' }, '403': { description: 'Forbidden' } },
+      },
+      delete: {
+        summary: 'Delete vehicle (admin)',
+        security: [{ bearer: [] }],
+        parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }],
+        responses: { '204': { description: 'Deleted' }, '403': { description: 'Forbidden' } },
+      },
+    },
+    '/trips': {
+      get: {
+        summary: 'List trips (all for admin, own for driver)',
+        security: [{ bearer: [] }],
+        parameters: [
+          { in: 'query', name: 'driverId', schema: { type: 'integer' } },
+          { in: 'query', name: 'vehicleId', schema: { type: 'integer' } },
+          { in: 'query', name: 'deviceId', schema: { type: 'integer' } },
+          { in: 'query', name: 'status', schema: { type: 'string' } },
+        ],
+        responses: {
+          '200': { description: 'OK', content: { 'application/json': { schema: { type: 'array', items: { $ref: '#/components/schemas/Trip' } } } } },
+        },
+      },
+      post: {
+        summary: 'Create trip (admin)',
+        security: [{ bearer: [] }],
+        responses: {
+          '201': { description: 'Created', content: { 'application/json': { schema: { $ref: '#/components/schemas/Trip' } } } },
+          '403': { description: 'Forbidden' },
+        },
+      },
+    },
+    '/trips/{id}': {
+      get: {
+        summary: 'Get trip by id',
+        security: [{ bearer: [] }],
+        parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }],
+        responses: {
+          '200': { description: 'OK', content: { 'application/json': { schema: { $ref: '#/components/schemas/Trip' } } } },
+          '403': { description: 'Forbidden' },
+          '404': { description: 'Not found' },
+        },
+      },
+      patch: {
+        summary: 'Update trip (admin)',
+        security: [{ bearer: [] }],
+        parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }],
+        responses: { '200': { description: 'OK' }, '403': { description: 'Forbidden' } },
+      },
+      delete: {
+        summary: 'Delete trip (admin)',
+        security: [{ bearer: [] }],
+        parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'integer' } }],
+        responses: { '204': { description: 'Deleted' }, '403': { description: 'Forbidden' } },
+      },
+    },
     '/telemetry': {
       post: {
         summary: 'Ingest a batch of sensor samples',
@@ -197,6 +326,11 @@ module.exports = {
         parameters: [
           { in: 'query', name: 'status', schema: { type: 'string', enum: ['active'] } },
           { in: 'query', name: 'deviceId', schema: { type: 'integer' } },
+          { in: 'query', name: 'vehicleId', schema: { type: 'integer' } },
+          { in: 'query', name: 'driverId', schema: { type: 'integer' } },
+          { in: 'query', name: 'tripId', schema: { type: 'integer' } },
+          { in: 'query', name: 'severity', schema: { type: 'string', enum: ['low', 'medium', 'high'] } },
+          { in: 'query', name: 'type', schema: { type: 'string' } },
         ],
         responses: {
           '200': { description: 'OK', content: { 'application/json': { schema: { type: 'array', items: { $ref: '#/components/schemas/Alarm' } } } } },
