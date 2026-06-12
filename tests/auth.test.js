@@ -20,7 +20,7 @@ test('POST /auth/register creates a user and hides the hash', async () => {
     .send({ email: 'a@a.com', password: 'pw' });
   assert.strictEqual(res.status, 201);
   assert.strictEqual(res.body.email, 'a@a.com');
-  assert.strictEqual(res.body.role, 'user');
+  assert.strictEqual(res.body.role, 'driver');
   assert.ok(res.body.id);
   assert.strictEqual(res.body.password_hash, undefined);
 });

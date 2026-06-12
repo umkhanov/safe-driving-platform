@@ -4,7 +4,7 @@ const { analyzeBatch } = require('../analysis');
 
 const tripCompletionTimers = new Map();
 const TRIP_IDLE_TIMEOUT_SECONDS = Math.max(
-  5,
+  1,
   Number(process.env.TRIP_IDLE_TIMEOUT_SECONDS || 60)
 );
 

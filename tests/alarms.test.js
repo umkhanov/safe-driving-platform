@@ -38,7 +38,7 @@ test('telemetry with hard brake creates alarm and emits alarm:new', async () => 
     .set('Authorization', `Bearer ${userToken}`)
     .send({
       deviceId,
-      samples: [{ ts: '2026-05-12T10:00:00Z', sensorType: 'accel', payload: { x: -6 } }],
+      samples: [{ ts: '2026-05-12T10:00:00Z', sensorType: 'accel', payload: { x: -6, y: 0.1, z: 0.2 } }],
     });
 
   const list = await request(app).get('/alarms').set('Authorization', `Bearer ${userToken}`);
@@ -76,7 +76,7 @@ test('GET /alarms returns only own alarms for user, all for admin', async () => 
 
   await request(app).post('/telemetry').set('Authorization', `Bearer ${userToken}`).send({
     deviceId,
-    samples: [{ ts: 't1', sensorType: 'accel', payload: { x: -5 } }],
+    samples: [{ ts: 't1', sensorType: 'accel', payload: { x: -5, y: 0.1, z: 0.2 } }],
   });
   await request(app).post('/telemetry').set('Authorization', `Bearer ${otherToken}`).send({
     deviceId: otherDev.body.id,
@@ -95,7 +95,7 @@ test('PATCH /alarms/:id/ack marks alarm acknowledged', async () => {
   const { app, userToken, deviceId } = await setup();
   await request(app).post('/telemetry').set('Authorization', `Bearer ${userToken}`).send({
     deviceId,
-    samples: [{ ts: 't1', sensorType: 'accel', payload: { x: -6 } }],
+    samples: [{ ts: 't1', sensorType: 'accel', payload: { x: -6, y: 0.1, z: 0.2 } }],
   });
   const list = await request(app).get('/alarms').set('Authorization', `Bearer ${userToken}`);
   const id = list.body[0].id;
@@ -113,7 +113,7 @@ test('GET /alarms can filter by status=active', async () => {
   await request(app).post('/telemetry').set('Authorization', `Bearer ${userToken}`).send({
     deviceId,
     samples: [
-      { ts: 't1', sensorType: 'accel', payload: { x: -6 } },
+      { ts: 't1', sensorType: 'accel', payload: { x: -6, y: 0.1, z: 0.2 } },
       { ts: 't2', sensorType: 'gyro', payload: { z: 2 } },
     ],
   });
