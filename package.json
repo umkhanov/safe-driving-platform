@@ -1,0 +1,37 @@
+{
+  "name": "safe-driving-backend",
+  "version": "0.1.0",
+  "description": "Backend service for Safe Driving and Driver Behavior Analysis platform",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test tests/",
+    "simulate": "node scripts/simulator.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "iot",
+    "telemetry",
+    "anomaly-detection"
+  ],
+  "author": "Arda Aydınkılınç <ardaaydinkilinc@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^11.10.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "socket.io": "^4.8.3",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "supertest": "^7.2.2"
+  }
+}
