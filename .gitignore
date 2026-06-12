@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+/frontend/dashboard/node_modules/
+/frontend/mobile/node_modules/
+
+# Production build outputs
+/frontend/dashboard/dist/
+/frontend/mobile/web-build/
+/frontend/mobile/dist/
+
+# Local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+eslint-debug.log*
+
+# SQLite Database and dynamic data
+data/*.db-journal
+data/*.db-shm
+data/*.db-wal
+*.db-journal
+*.db-shm
+*.db-wal
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehgfm.db
+Thumbs.db
+
+# Expo
+/frontend/mobile/.expo/
+/frontend/mobile/.expo-shared/
+
+# IDE / Editor configuration
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

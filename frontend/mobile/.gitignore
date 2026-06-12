@@ -1,0 +1,15 @@
+# Expo
+.expo/
+.expo-shared/
+web-build/
+dist/
+
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store
+
+# Native folders (if generated)
+/ios/
+/android/
